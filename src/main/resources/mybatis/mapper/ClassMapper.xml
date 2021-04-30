@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linglett.mdwarmup.mapper.ClassGMapper">
+    <select id="queryClassGList" resultMap="ClassGTeacher">
+        select * from mdwarmup.class;
+    </select>
+
+    <select id="queryClassGByCid" parameterType="int" resultType="ClassG">
+        select * from mdwarmup.class where cid=#{cid};
+    </select>
+
+    <insert id="addClassG" parameterType="ClassG">
+        insert into mdwarmup.class (cname,grade,school) values (#{cname},#{grade},#{school});
+    </insert>
+
+    <update id="updateClassG" parameterType="ClassG">
+        update mdwarmup.class set cname=#{cname},grade=#{grade},school=#{school}, where cid=#{cid};
+    </update>
+
+    <delete id="deleteClassG" parameterType="int">
+        delete from  mdwarmup.class where cid=#{cid};
+    </delete>
+
+    <delete id="deleteCtr" parameterType="int">
+        delete from  mdwarmup.ctrel where cid=#{cid};
+    </delete>
+
+    <select id="queryClassGAndTeacherList" resultMap="ClassGTeacher">
+    select teacher.tid,teacher.tname,teacher.email,teacher.sub,class.cname,class.cid,class.school,class.grade
+    from class
+	LEFT JOIN ctrel
+	ON class.cid=ctrel.cid
+	LEFT JOIN teacher
+	ON ctrel.tid=teacher.tid
+    </select>
+    <resultMap id="ClassGTeacher" type="ClassG">
+        <result column="cid" property="cid"/>
+        <result column="cname" property="cname"/>
+        <result column="grade" property="grade"/>
+        <result column="school" property="school"/>
+        <collection property="teachers" ofType="Teacher">
+            <result property="tid" column="tid"/>
+            <result property="tname" column="tname"/>
+            <result property="email" column="email"/>
+            <result property="sub" column="sub"/>
+        </collection>
+    </resultMap>
+</mapper>
